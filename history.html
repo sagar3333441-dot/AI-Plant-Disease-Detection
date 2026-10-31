@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Detection History</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f1f8f3;
+        }
+
+        .navbar {
+            background: #2e7d32;
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .back-btn {
+            background: white;
+            color: #2e7d32;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2e7d32;
+        }
+
+        .history-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .history-card h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+
+        .empty {
+            background: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 12px;
+        }
+
+        .clear-btn {
+            background: #c62828;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+    </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <h2>🌿 Plant AI</h2>
+
+    <a href="dashboard.html" class="back-btn">
+        Dashboard
+    </a>
+
+</div>
+
+
+<div class="container">
+
+    <h1>📋 Detection History</h1>
+
+    <div id="historyContainer"></div>
+    <button class="pdf-btn" onclick="generatePDF()">
+    📄 Generate PDF Report
+</button>
+
+</div>
+
+
+<script>
+
+function loadHistory() {
+
+    const historyContainer =
+        document.getElementById("historyContainer");
+
+    const history =
+        JSON.parse(localStorage.getItem("detectionHistory")) || [];
+
+
+    if (history.length === 0) {
+
+        historyContainer.innerHTML = `
+            <div class="empty">
+                <h2>📭 No Detection History</h2>
+                <p>Your plant disease detections will appear here.</p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    historyContainer.innerHTML = "";
+
+
+    history.forEach(function(item) {
+
+        const card = document.createElement("div");
+
+        card.className = "history-card";
+
+        card.innerHTML = `
+            <h3>🌿 ${item.disease}</h3>
+
+            <p>
+                <b>Confidence:</b>
+                ${item.confidence}
+            </p>
+
+            <p>
+                <b>Date:</b>
+                ${item.date}
+            </p>
+
+            <p>
+                <b>Cause:</b>
+                ${item.cause}
+            </p>
+
+            <p>
+                <b>Remedy:</b>
+                ${item.remedy}
+            </p>
+
+            <p>
+                <b>Precaution:</b>
+                ${item.precaution}
+            </p>
+        `;
+
+        historyContainer.appendChild(card);
+
+    });
+
+}
+function generatePDF() {
+
+    const history =
+        JSON.parse(localStorage.getItem("detectionHistory")) || [];
+
+    if (history.length === 0) {
+        alert("No detection history available.");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+
+    const doc = new jsPDF();
+
+    const item = history[0];
+
+    doc.setFontSize(18);
+    doc.text("AI Plant Disease Detection Report", 20, 20);
+
+    doc.setFontSize(12);
+
+    doc.text(`Disease: ${item.disease}`, 20, 40);
+
+    doc.text(`Confidence: ${item.confidence}`, 20, 50);
+
+    doc.text(`Date: ${item.date}`, 20, 60);
+
+    doc.text("Cause:", 20, 75);
+    doc.text(
+        doc.splitTextToSize(item.cause, 170),
+        20,
+        83
+    );
+
+    doc.text("Remedy:", 20, 110);
+    doc.text(
+        doc.splitTextToSize(item.remedy, 170),
+        20,
+        118
+    );
+
+    doc.text("Precaution:", 20, 145);
+    doc.text(
+        doc.splitTextToSize(item.precaution, 170),
+        20,
+        153
+    );
+
+    doc.save("plant-disease-report.pdf");
+}
+
+
+loadHistory();
+
+</script>
+
+</body>
+</html>

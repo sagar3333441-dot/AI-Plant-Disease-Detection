@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - AI Plant Disease Detection</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background: #f1f8f3;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #2e7d32;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1b5e20;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .signup-link a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🌿 Welcome Back</h1>
+
+    <p class="subtitle">
+        AI Plant Disease Detection
+    </p>
+
+    <form id="loginForm">
+
+        <label for="email">Email</label>
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            required
+        >
+
+        <label for="password">Password</label>
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            required
+        >
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+
+    <div id="message"></div>
+
+    <div class="signup-link">
+        Don't have an account?
+        <a href="signup.html">Create Account</a>
+    </div>
+
+</div>
+
+
+<script>
+
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    const message = document.getElementById("message");
+
+
+    // Saved user ko localStorage se read karo
+    const savedUser = localStorage.getItem("plantDiseaseUser");
+
+
+    if (!savedUser) {
+
+        message.style.color = "red";
+
+        message.innerHTML =
+            "❌ No account found. Please create an account first.";
+
+        return;
+    }
+
+
+    const user = JSON.parse(savedUser);
+
+
+    // Email aur password check
+    if (email === user.email && password === user.password) {
+
+        message.style.color = "green";
+
+        message.innerHTML =
+            "✅ Login successful!";
+
+
+        // User ko dashboard par bhejo
+        setTimeout(function() {
+
+            window.location.href = "dashboard.html";
+
+        }, 1000);
+
+    } else {
+
+        message.style.color = "red";
+
+        message.innerHTML =
+            "❌ Invalid email or password.";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - AI Plant Disease Detection</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f1f8f3;
+        }
+
+        .navbar {
+            background: #2e7d32;
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            margin: 0;
+        }
+
+        .logout {
+            background: white;
+            color: #2e7d32;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .welcome {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            color: #2e7d32;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            font-size: 40px;
+            margin: 5px;
+        }
+
+        .card h3 {
+            color: #2e7d32;
+        }
+
+        .detect-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: #2e7d32;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .detect-btn:hover {
+            background: #1b5e20;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <h2>🌿 Plant AI</h2>
+
+        <button class="logout" onclick="logout()">
+            Logout
+        </button>
+    </div>
+
+
+    <div class="container">
+
+        <div class="welcome">
+
+            <h1>Welcome, <span id="userName">User</span> 👋</h1>
+
+            <p>
+                Welcome to the AI Plant Disease Detection System.
+                Upload a plant leaf image and let AI identify possible diseases.
+            </p>
+
+        </div>
+
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h2>🌿</h2>
+
+                <h3>Detect Disease</h3>
+
+                <p>
+                    Upload a leaf image and get an AI-based disease prediction.
+                </p>
+
+                <a href="index.html" class="detect-btn">
+                    Detect Now
+                </a>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>📊</h2>
+
+                <h3>AI Analysis</h3>
+
+                <p>
+                    View disease name and prediction confidence.
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h2>📋</h2>
+
+                <h3>Detection History</h3>
+                <a href="history.html">view Detection History</a>
+
+                <p>
+                    Your previous detections will appear here.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+<script>
+
+    // Check whether user is logged in
+    const savedUser = localStorage.getItem("plantDiseaseUser");
+
+    if (!savedUser) {
+
+        window.location.href = "login.html";
+
+    } else {
+
+        const user = JSON.parse(savedUser);
+
+        document.getElementById("userName").textContent = user.name;
+
+    }
+
+
+    // Logout function
+    function logout() { 
+
+    localStorage.removeItem("plantDiseaseUser");
+
+    window.location.href = "login.html";
+}
+
+
+    
+
+</script>
+
+</body>
+</html>

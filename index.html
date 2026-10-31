@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Plant Disease Detection</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 40px;
+            background: #f1f8f3;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2e7d32;
+        }
+
+        #preview {
+            max-width: 300px;
+            max-height: 300px;
+            display: none;
+            margin: 20px auto;
+            border-radius: 10px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            background: #2e7d32;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1b5e20;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🌿 AI Plant Disease Detection</h1>
+
+    <p>Upload a leaf image to detect plant disease.</p>
+
+    <input type="file" id="leafImage" accept="image/*">
+
+    <img id="preview" alt="Leaf Preview">
+
+    <br>
+
+    <button id="detectBtn">Detect Disease</button>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+const imageInput = document.getElementById("leafImage");
+const preview = document.getElementById("preview");
+const result = document.getElementById("result");
+
+
+// Show image preview
+imageInput.addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+        result.innerHTML = "✅ Image selected.";
+    }
+
+});
+
+
+// Send image to Python backend
+document.getElementById("detectBtn").addEventListener("click", async function () {
+
+    const file = imageInput.files[0];
+
+    if (!file) {
+        result.innerHTML = "⚠️ Please select a leaf image first.";
+        return;
+    }
+
+    result.innerHTML = "🤖 Detecting...";
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+
+        const response = await fetch("http://127.0.0.1:5000/predict", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        result.innerHTML = `
+    <h3>🌿 Prediction Result</h3>
+
+    <p><b>Disease:</b> ${data.disease}</p>
+
+    <p><b>Confidence:</b> ${data.confidence}</p>
+
+    <hr>
+
+    <p><b> Cause:</b> ${data.cause}</p>
+
+    <p><b> Remedy:</b> ${data.remedy}</p>
+
+    <p><b> Precaution:</b> ${data.precaution}</p>
+`;
+// Save prediction to Detection History
+const history =
+    JSON.parse(localStorage.getItem("detectionHistory")) || [];
+
+const newDetection = {
+    disease: data.disease,
+    confidence: data.confidence,
+    cause: data.cause,
+    remedy: data.remedy,
+    precaution: data.precaution,
+    date: new Date().toLocaleString()
+};
+
+history.unshift(newDetection);
+
+localStorage.setItem(
+    "detectionHistory",
+    JSON.stringify(history)
+);
+    } catch (error) {
+
+        result.innerHTML = "❌ Backend connection failed.";
+
+        console.error(error);
+    }
+
+});
+
+</script>
+
+</body>
+</html>
